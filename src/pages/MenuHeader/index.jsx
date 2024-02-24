@@ -4,6 +4,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {GithubOutlined, TwitterOutlined, CaretDownOutlined} from "@ant-design/icons";
 import './index.css'
 import {getEthPrice} from "@utils";
+import price from "@utils/price.js";
 
 const EthPrice = () => {
     const [ethPrice, setEthPrice] = useState(null);
@@ -19,6 +20,7 @@ const EthPrice = () => {
     if (ethPrice === null) {
         return <div>Loading ETH Price...</div>;
     }
+    price.ETH = ethPrice;
     return <div>ETH Price: ${ethPrice}</div>
 }
 const MenuHeader = () => {
@@ -42,20 +44,6 @@ const MenuHeader = () => {
                 {
                     label: 'zkRank',
                     key: 'zkRank',
-                },
-            ],
-        },
-        {
-            label: <span>Stark <CaretDownOutlined /></span>,
-            key: 'starknet',
-            children: [
-                {
-                    label: 'Stark',
-                    key: 'stark',
-                },
-                {
-                    label: 'StarkTasks',
-                    key: 'starkTasks',
                 },
             ],
         },
@@ -103,10 +91,20 @@ const MenuHeader = () => {
             label: 'Deposit',
             key: 'deposit',
         },
-        // {
-        //     label: 'Coffee',
-        //     key: 'coffee',
-        // },
+        {
+            label: <span>捐赠 / 已空投 <CaretDownOutlined /></span>,
+            key: 'donate',
+            children: [
+                {
+                    label: '捐赠',
+                    key: 'donate',
+                },
+                {
+                    label: 'Stark',
+                    key: 'stark',
+                },
+            ],
+        },
         {
             label: <a href="https://github.com/luoyeETH/MyWalletScan" target="_blank"
                       rel="noopener noreferrer"><GithubOutlined/></a>,

@@ -268,7 +268,8 @@ function Zksync() {
                                                           l1Tol2Times,
                                                           l1Tol2Amount,
                                                           l2Tol1Times,
-                                                          l2Tol1Amount
+                                                          l2Tol1Amount,
+                                                          paymasterCount
                                                       }) => {
                     updatedData[index] = {
                         ...updatedData[index],
@@ -283,6 +284,7 @@ function Zksync() {
                         l1Tol2Amount,
                         l2Tol1Times,
                         l2Tol1Amount,
+                        paymasterCount
                     };
                     setData(updatedData);
                     localStorage.setItem('addresses', JSON.stringify(data));
@@ -311,6 +313,7 @@ function Zksync() {
                     contractActivity: null,
                     totalFee: null,
                     totalExchangeAmount: null,
+                    paymasterCount: null,
                 };
                 const newData = [...data, newEntry];
                 setData(newData);
@@ -351,7 +354,8 @@ function Zksync() {
                                                           l1Tol2Times,
                                                           l1Tol2Amount,
                                                           l2Tol1Times,
-                                                          l2Tol1Amount
+                                                          l2Tol1Amount,
+                                                          paymasterCount
                                                       }) => {
                     newEntry.zks2_last_tx = zks2_last_tx;
                     newEntry.totalFee = totalFee;
@@ -364,6 +368,7 @@ function Zksync() {
                     newEntry.l2Tol1Times = l2Tol1Times;
                     newEntry.l2Tol1Amount = l2Tol1Amount;
                     newEntry.totalExchangeAmount = totalExchangeAmount;
+                    newEntry.paymasterCount = paymasterCount;
                     setData([...newData]);
                     localStorage.setItem('addresses', JSON.stringify(newData));
                 })
@@ -474,6 +479,7 @@ function Zksync() {
                         item.l1Tol2Amount = null;
                         item.l2Tol1Times = null;
                         item.l2Tol1Amount = null;
+                        item.paymasterCount = null;
                         return getZkSyncBridge(item.address).then(({
                                                                        zks2_last_tx,
                                                                        totalExchangeAmount,
@@ -485,7 +491,8 @@ function Zksync() {
                                                                        l1Tol2Times,
                                                                        l1Tol2Amount,
                                                                        l2Tol1Times,
-                                                                       l2Tol1Amount
+                                                                       l2Tol1Amount,
+                                                                       paymasterCount
                                                                    }) => {
                             item.zks2_last_tx = zks2_last_tx;
                             item.totalExchangeAmount = totalExchangeAmount;
@@ -498,6 +505,7 @@ function Zksync() {
                             item.l1Tol2Amount = l1Tol2Amount;
                             item.l2Tol1Times = l2Tol1Times;
                             item.l2Tol1Amount = l2Tol1Amount;
+                            item.paymasterCount = paymasterCount;
                             setData([...newData]);
                             localStorage.setItem('addresses', JSON.stringify(newData));
                         })
@@ -590,6 +598,7 @@ function Zksync() {
                     contractActivity: null,
                     totalFee: null,
                     totalExchangeAmount: null,
+                    paymasterCount: null,
                 };
                 if (index === -1) {
                     newData.push(item);
@@ -626,7 +635,8 @@ function Zksync() {
                                                                             l1Tol2Times,
                                                                             l1Tol2Amount,
                                                                             l2Tol1Times,
-                                                                            l2Tol1Amount
+                                                                            l2Tol1Amount,
+                                                                            paymasterCount
                                                                         }) => {
                     item.zks2_last_tx = zks2_last_tx;
                     item.totalExchangeAmount = totalExchangeAmount;
@@ -639,6 +649,7 @@ function Zksync() {
                     item.l1Tol2Amount = l1Tol2Amount;
                     item.l2Tol1Times = l2Tol1Times;
                     item.l2Tol1Amount = l2Tol1Amount;
+                    item.paymasterCount = paymasterCount;
                 }));
                 promisesQueue.push(promiseWithProgress);
                 processQueue();
@@ -946,7 +957,7 @@ function Zksync() {
                       
                         return (
                           <a
-                            href={"https://explorer.zksync.io/address/" + record.address}
+                            href={"https://era.zksync.network/address/" + record.address}
                             target={"_blank"}
                             style={{ color: textColor }}
                           >
@@ -955,6 +966,19 @@ function Zksync() {
                         );
                       },
                     width: 70
+                },
+                {
+                    title: <a href="https://docs.zksync.io/build/developer-reference/account-abstraction.html#paymasters"
+                        target="_blank" rel="noopener noreferrer">Paymaster</a>,
+                    dataIndex: "paymasterCount",
+                    key: "paymasterCount",
+                    align: "center",
+                    render: (text, record) => (
+                        <span style={{ color: text === 0 ? 'red' : 'inherit' }}>
+                            {text === null ? <Spin /> : text}
+                        </span>
+                        ),
+                    width: 60
                 },
                 {
                     title: "官方桥跨链Tx数",
@@ -1319,7 +1343,7 @@ function Zksync() {
                             avgContract = avgContract / pageData.length;
                             avgAmount = avgAmount / pageData.length;
                             avgScore = avgScore / pageData.length;
-                            const emptyCells = Array(5).fill().map((_, index) => <Table.Summary.Cell key={index} index={index + 11}/>);
+                            const emptyCells = Array(6).fill().map((_, index) => <Table.Summary.Cell key={index} index={index + 11}/>);
 
                             return (
                                 <>

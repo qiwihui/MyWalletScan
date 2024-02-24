@@ -584,6 +584,7 @@ const Stark = () => {
                     item.stark_usdc_balance = null;
                     item.stark_usdt_balance = null;
                     item.stark_dai_balance = null;
+                    item.stark_strk_balance = null;
                     item.d_eth_amount = null;
                     item.d_eth_count = null;
                     item.d_usdc_amount = null;
@@ -641,11 +642,12 @@ const Stark = () => {
                     //     localStorage.setItem('stark_addresses', JSON.stringify(data));
                     // })})
                     promisesQueue.push(() => {
-                        return getStarkBalances(item.address).then(({eth_balance, usdc_balance, usdt_balance, dai_balance}) => {
+                        return getStarkBalances(item.address).then(({eth_balance, usdc_balance, usdt_balance, dai_balance, strk_balance}) => {
                         item.stark_eth_balance = eth_balance;
                         item.stark_usdc_balance = usdc_balance;
                         item.stark_usdt_balance = usdt_balance;
                         item.stark_dai_balance = dai_balance;
+                        item.stark_strk_balance = strk_balance;
                         setData([...newData]);
                         localStorage.setItem('stark_addresses', JSON.stringify(data));
                     })})
@@ -795,6 +797,7 @@ const Stark = () => {
                     item.stark_usdc_balance = null;
                     item.stark_usdt_balance = null;
                     item.stark_dai_balance = null;
+                    item.stark_strk_balance = null;
                     setData([...newData]);
                     
                     promisesQueue.push(() => {
@@ -818,11 +821,12 @@ const Stark = () => {
                         localStorage.setItem('stark_addresses', JSON.stringify(data));
                     })})
                     promisesQueue.push(() => {
-                        return getStarkBalances(item.address).then(({eth_balance, usdc_balance, usdt_balance, dai_balance}) => {
+                        return getStarkBalances(item.address).then(({eth_balance, usdc_balance, usdt_balance, dai_balance, strk_balance}) => {
                         item.stark_eth_balance = eth_balance;
                         item.stark_usdc_balance = usdc_balance;
                         item.stark_usdt_balance = usdt_balance;
                         item.stark_dai_balance = dai_balance;
+                        item.stark_strk_balance = strk_balance;
                         setData([...newData]);
                         localStorage.setItem('stark_addresses', JSON.stringify(data));
                     })})
@@ -984,7 +988,7 @@ const Stark = () => {
             width: 80,
         },
         {
-            title: "StarkNet   🔴建议减少刷新次数",
+            title: "StarkNet",
             className: "starkNet",
             children: [
                 {
@@ -1015,6 +1019,14 @@ const Stark = () => {
                     title: "DAI",
                     dataIndex: "stark_dai_balance",
                     key: "stark_dai_balance",
+                    align: "center",
+                    render: (text, record) => text === null ? <Spin/> : text,
+                    width: 70,
+                },
+                {
+                    title: "STRK",
+                    dataIndex: "stark_strk_balance",
+                    key: "stark_strk_balance",
                     align: "center",
                     render: (text, record) => text === null ? <Spin/> : text,
                     width: 70,
@@ -1322,9 +1334,8 @@ const Stark = () => {
                 </Modal>
                 <Spin spinning={tableLoading}>
                 <div style={{ width: '100%', margin: "0 auto" }}>
-                    <span className="highlight-text">Congratulations!  <a href="https://provisions.starknet.io/">点击跳转官方空投查询页面</a></span>
-
-                    {/* <span className="highlight-text">StarkNet官方已确认完成快照 <a href="https://x.com/StarknetFndn/status/1730532927405003219?s=20">点击查看原文</a></span> */}
+                    <span className="highlight-text">恭喜各位！StarkNet现已空投，本页面将在七天内下线或移动 <br/>如果这款工具对您有所帮助，并为您带来了额外的价值，那么您的支持将是我们最大的动力。维护和改进这个工具需要不少的时间和精力，您的捐赠将有助于确保我们能够持续提供更好的服务和功能。
+                    <br/>点击<a href="https://airdrop.dddd8.xyz/#/donate">这里</a>对本项目进行捐赠 / 对项目原作者<a href="https://bitboxtools.github.io/#/coffee">捐赠</a>。再次感谢您的支持，祝您使用愉快！  </span>
                 </div>
                     <Table className="grayed-out"
                         rowSelection={rowSelection}
@@ -1342,18 +1353,21 @@ const Stark = () => {
                             let starkUsdcBalance = 0;
                             let starkUsdtBalance = 0;
                             let starkDaiBalance = 0;
+                            let starkStrkBalance = 0;
                             let totalStarkAirdrop = 0;
                             pageData.forEach(({
                                                   stark_eth_balance,
                                                   stark_usdc_balance,
                                                   stark_usdt_balance,
                                                   stark_dai_balance,
+                                                  stark_strk_balance,
                                                   stark_airdrop,
                                               }) => {
                                 starkEthBalance += Number(stark_eth_balance);
                                 starkUsdcBalance += Number(stark_usdc_balance);
                                 starkUsdtBalance += Number(stark_usdt_balance);
                                 starkDaiBalance += Number(stark_dai_balance);
+                                starkStrkBalance += Number(stark_strk_balance);
                                 totalStarkAirdrop += Number(stark_airdrop);
                             })
 
@@ -1367,8 +1381,9 @@ const Stark = () => {
                                         <Table.Summary.Cell index={7}>{starkUsdcBalance.toFixed(2)}</Table.Summary.Cell>
                                         <Table.Summary.Cell index={8}>{starkUsdtBalance.toFixed(2)}</Table.Summary.Cell>
                                         <Table.Summary.Cell index={9}>{starkDaiBalance.toFixed(2)}</Table.Summary.Cell>
+                                        <Table.Summary.Cell index={10}>{starkStrkBalance.toFixed(1)}</Table.Summary.Cell>
                                         {emptyCells}
-                                        <Table.Summary.Cell index={10}>{totalStarkAirdrop.toFixed(0)}</Table.Summary.Cell>
+                                        <Table.Summary.Cell index={11}>{totalStarkAirdrop.toFixed(0)}</Table.Summary.Cell>
                                     </Table.Summary.Row>
                                 </>
                             )

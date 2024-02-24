@@ -1,5 +1,6 @@
 import axios from "axios";
 import {ethers} from "ethers";
+import price from '@utils/price.js';
 
 function getDayNumber(d) {
     return `${d.getUTCFullYear()}-${d.getUTCMonth() + 1}-${d.getUTCDate()}`;
@@ -18,18 +19,18 @@ function getMonthNumber(d) {
 }
 
 const getEthPrice = async () => {
-    try {
-        const response = await axios.post('https://mainnet.era.zksync.io/', {
-            id: 42,
-            jsonrpc: '2.0',
-            method: 'zks_getTokenPrice',
-            params: ['0x0000000000000000000000000000000000000000'],
-        });
-        return response.data.result
-    } catch (e) {
-        console.log(e)
-        return 1950
-    }
+    return price.ETH;
+    // try {
+    //     const options = {
+    //         method: 'GET',
+    //         url: 'https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD',
+    //     }
+    //     let response = await axios.request(options)
+    //     return response.data['USD']
+    // } catch (e) {
+    //     console.log(e)
+    //     return "/"
+    // }
 
 }
 
@@ -101,7 +102,8 @@ async function processTransactions(
     l1Tol2Times,
     l1Tol2Amount,
     l2Tol1Times,
-    l2Tol1Amount
+    l2Tol1Amount,
+    paymasterCount
 ) {
     for (let i = 0; i < list.length; i++) {
         if (list[i]['from'].toLowerCase() === address.toLowerCase()) {
@@ -130,10 +132,12 @@ async function processTransactions(
             const value = ethers.formatEther(list[i]['value'], "ether");
             l2Tol1Amount += parseFloat(value);
         }
+        if  (list[i]['type'] === 113) {
+            paymasterCount++;
+        }
     }
     return [zks2_last_tx, totalExchangeAmount, totalFee, contract, days, weeks, months, l1Tol2Times, l1Tol2Amount,
-            l2Tol1Times,
-            l2Tol1Amount];
+            l2Tol1Times, l2Tol1Amount, paymasterCount];
 }
 
 async function getZkSyncBridge(address) {
@@ -153,6 +157,7 @@ async function getZkSyncBridge(address) {
         let l2Tol1Times = 0;
         let l2Tol1Amount = 0;
         let totalExchangeAmount = 0;
+        let paymasterCount = 0;
         const initUrl = `https://block-explorer-api.mainnet.zksync.io/transactions?address=${address}&limit=100&page=1`;
         const response = await axios.get(initUrl)
         const pageValue = parseInt(response.data.meta.totalPages);
@@ -163,7 +168,7 @@ async function getZkSyncBridge(address) {
 
             [zks2_last_tx,
                 totalExchangeAmount, totalFee, contract, days, weeks, months, l1Tol2Times, l1Tol2Amount,
-                l2Tol1Times, l2Tol1Amount] =
+                l2Tol1Times, l2Tol1Amount, paymasterCount] =
                 await processTransactions(
                     zks2_last_tx,
                     totalExchangeAmount,
@@ -177,7 +182,8 @@ async function getZkSyncBridge(address) {
                     l1Tol2Times,
                     l1Tol2Amount,
                     l2Tol1Times,
-                    l2Tol1Amount
+                    l2Tol1Amount,
+                    paymasterCount
                 )
         }
         totalExchangeAmount = await getAmount(address);
@@ -197,7 +203,8 @@ async function getZkSyncBridge(address) {
             l1Tol2Times,
             l1Tol2Amount: l1Tol2Amount.toFixed(3),
             l2Tol1Times,
-            l2Tol1Amount: l2Tol1Amount.toFixed(3)
+            l2Tol1Amount: l2Tol1Amount.toFixed(3),
+            paymasterCount
         }
     } catch (e) {
         console.log(e);
@@ -207,7 +214,7 @@ async function getZkSyncBridge(address) {
             totalFee: "Error",
             contractActivity: "Error",
             dayActivity: "Error", weekActivity: "Error", monthActivity: "Error",
-            l1Tol2Times: "Error", l1Tol2Amount: "Error", l2Tol1Times: "Error", l2Tol1Amount: "Error"
+            l1Tol2Times: "Error", l1Tol2Amount: "Error", l2Tol1Times: "Error", l2Tol1Amount: "Error", paymasterCount: "Error",
         }
     }
 }
