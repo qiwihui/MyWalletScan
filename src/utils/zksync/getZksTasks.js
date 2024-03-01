@@ -6,7 +6,7 @@ async function getZksTasks(address) {
         const response = await axios.get(url);
         const pageValue = parseInt(response.data.meta.totalPages);
         const transactions = response.data.items;
-        transactions.filter(item => item.from === address);
+        transactions.filter(item => item.from.toLowerCase() === address.toLowerCase());
         let contractAddresses = transactions.map(item => item["to"]);
         let timestamps = transactions.map(item => Date.parse(item["receivedAt"]));
         if (pageValue > 1) {
@@ -16,7 +16,7 @@ async function getZksTasks(address) {
                 const url = `https://block-explorer-api.mainnet.zksync.io/transactions?address=${address}&limit=100&page=${i}`;
                 const response = await axios.get(url);
                 let newTransactions = response.data.items;
-                newTransactions = newTransactions.filter(item => item.from === address);
+                newTransactions = newTransactions.filter(item => item.from.toLowerCase() === address.toLowerCase());
                 let newcontractAddresses = newTransactions.map(item => item["to"]);
                 contractAddresses = contractAddresses.concat(newcontractAddresses);
                 let newtimestamp = newTransactions.map(item => Date.parse(item["receivedAt"]));
