@@ -1,19 +1,26 @@
 import axios from 'axios';
 
-async function getEthBalance(walletAddress, network) {
+async function getEthBalance(walletAddress, network='ethereum') {
     try {
-        const rpcPool = [
-            // "https://cloudflare-eth.com",
-            "https://eth.llamarpc.com",
-            "https://rpc.ankr.com/eth",
-            "https://1rpc.io/eth",
-            "https://eth.rpc.blxrbdn.com",
-            "https://eth-mainnet.public.blastapi.io"
-            // Add more RPC URLs as needed
-        ];
+        const rpcPools = {
+            ethereum: [
+                "https://eth.llamarpc.com",
+                "https://rpc.ankr.com/eth",
+                "https://1rpc.io/eth",
+                "https://eth.rpc.blxrbdn.com",
+                "https://eth-mainnet.public.blastapi.io"
+                // Add more RPC URLs as needed
+            ],
+            arbitrum: [
+                "https://arbitrum.llamarpc.com",
+                "https://rpc.ankr.com/arbitrum",
+                "https://1rpc.io/arb",
+                "https://arbitrum-one.public.blastapi.io"
+            ]
+        };
 
-        const randomIndex = Math.floor(Math.random() * rpcPool.length);
-        const rpcLink = rpcPool[randomIndex];
+        const randomIndex = Math.floor(Math.random() * rpcPools[network].length);
+        const rpcLink = rpcPools[network][randomIndex];
 
         const response = await axios.post(rpcLink, {
             jsonrpc: "2.0",

@@ -4,7 +4,7 @@ async function getZksEra(address) {
     try {
         let url = "https://block-explorer-api.mainnet.zksync.io/address/" + address;
         const response = await axios.get(url);
-        let tx2, balance2, usdcBalance, eraETH;
+        let tx2, balance2, usdcBalance, usdtBalance, eraETH;
         if ("0x000000000000000000000000000000000000800A" in response.data.balances) {
             balance2 = (response.data.balances["0x000000000000000000000000000000000000800A"]
                 .balance / 10 ** 18).toFixed(4)
@@ -17,6 +17,12 @@ async function getZksEra(address) {
         } else {
             usdcBalance = 0;
         }
+        if ("0x493257fD37EDB34451f62EDf8D2a0C418852bA4C" in response.data.balances) {
+            usdtBalance = (response.data.balances["0x493257fD37EDB34451f62EDf8D2a0C418852bA4C"]
+                .balance / 10 ** 6).toFixed(2)
+        } else {
+            usdtBalance = 0;
+        }
         if ("0x1BbD33384869b30A323e15868Ce46013C82B86FB" in response.data.balances) {
             eraETH = ((response.data.balances["0x1BbD33384869b30A323e15868Ce46013C82B86FB"]
                 .balance / 10 ** 8) / 50).toFixed(4);
@@ -25,7 +31,7 @@ async function getZksEra(address) {
             eraETH = 0;
         }
         tx2 = response.data.sealedNonce;
-        return {balance2, tx2, usdcBalance, eraETH};
+        return {balance2, tx2, usdcBalance, usdtBalance, eraETH};
     } catch (error) {
         console.error(error);
         return {balance2: "Error", tx2: "Error", usdcBalance: "Error"};

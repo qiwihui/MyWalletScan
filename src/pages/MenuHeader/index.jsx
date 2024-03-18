@@ -30,6 +30,10 @@ const MenuHeader = () => {
             key: 'overview',
         },
         {
+            label: 'Assets',
+            key: 'assets',
+        },
+        {
             label: <span>zkSync <CaretDownOutlined /></span>,
             key: 'zks',
             children: [

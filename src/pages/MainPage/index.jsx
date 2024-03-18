@@ -17,6 +17,7 @@ import Deposit from "@pages/Deposit/index.jsx";
 import Notice from "@components/Notice/index.jsx";
 import StarkTasks from "@pages/StarkTasks/index.jsx";
 import Overview from "@pages/Overview/index.jsx";
+import Assets from "@pages/Assets/index.jsx";
 
 function MainPage() {
     const location = useLocation()
@@ -72,6 +73,7 @@ function MainPage() {
                         {location.pathname === "/donate" && <Donate/>}
                         {location.pathname === "/deposit" && <Deposit/>}
                         {location.pathname === "/overview" && <Overview/>}
+                        {location.pathname === "/assets" && <Assets/>}
                     </div>
                 </div>
             </Layout>
