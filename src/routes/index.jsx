@@ -4,7 +4,7 @@ import React, {Suspense} from "react";
 import {Navigate, useRoutes} from "react-router-dom";
 
 const Overview = React.lazy(() => import("@pages/Overview"));
-const Assets = React.lazy(() => import("@pages/assets"));
+const Assets = React.lazy(() => import("@pages/Assets"));
 const Zksync = React.lazy(() => import("@pages/Zksync"));
 const ZksyncTasks = React.lazy(() => import("@pages/ZksyncTasks"))
 const ZkRank = React.lazy(() => import("@pages/ZkRank"));
